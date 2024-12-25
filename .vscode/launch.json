@@ -1,0 +1,20 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CustomerappApplication",
+            "request": "launch",
+            "mainClass": "com.groupassist.customerapp.CustomerappApplication"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-CustomerappApplication<customerapp>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.groupassist.customerapp.CustomerappApplication",
+            "projectName": "customerapp",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

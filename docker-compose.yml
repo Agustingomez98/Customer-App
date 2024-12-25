@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend-groupassist
+    ports:
+      - "4173:4173"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend-groupassist
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/customerdb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root_password
+    depends_on:
+      - database
+    networks:
+      - app-network
+    # Aquí el backend no se levanta hasta que la base de datos esté lista
+    entrypoint: ["/root/wait-for-it.sh", "database:3306", "-t", "50", "--", "java", "-jar", "/root/target/customerapp-0.0.1-SNAPSHOT.jar"]
+
+  database:
+    image: mysql:8.0
+    container_name: mysql_container
+    restart: always
+    ports:
+      - "3309:3306"  # Puerto del host mapeado al puerto del contenedor
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: customerdb
+      MYSQL_USER: usuario
+      MYSQL_PASSWORD: contraseña
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Este es el script de inicialización
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db_data:
